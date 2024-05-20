@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersh Device Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .response {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background: #222;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .error {
+            color: red;
+        }
+        .info {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cybersh Device Info</h1>
+        <form id="deviceForm">
+            <label for="msisdn">Enter MSISDN:</label>
+            <input type="text" id="msisdn" name="msisdn" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="response" class="response"></div>
+    </div>
+    <script>
+        document.getElementById("deviceForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var msisdn = document.getElementById("msisdn").value;
+            fetchDeviceInfo(msisdn);
+        });
+
+        function fetchDeviceInfo(msisdn) {
+            fetch("https://your-api-endpoint.com/device-info?msisdn=" + msisdn)
+            .then(response => response.json())
+            .then(data => {
+                var responseDiv = document.getElementById("response");
+                if (data.error) {
+                    responseDiv.innerHTML = "<p class='error'>" + data.error + "</p>";
+                } else {
+                    var infoString = "❏ AUTHOR: " + data.author + "<br>" +
+                                     "❏ CHANNEL: " + data.channel + "<br>" +
+                                     "❏ DEVICE-INFO: <br>" +
+                                     "&emsp;❏ ID: " + data.device_info.id + "<br>" +
+                                     "&emsp;❏ DEVICE_TYPE: " + data.device_info.device_type + "<br>" +
+                                     "&emsp;❏ NUMBER_TYPE: " + data.device_info.number_type + "<br>" +
+                                     "&emsp;❏ PLATFORM: " + data.device_info.platform + "<br>" +
+                                     "&emsp;❏ CUSTOMER_ACCOUNT_ID: " + data.device_info.customer_account_id + "<br>" +
+                                     "&emsp;❏ MSISDN: " + data.device_info.msisdn + "<br>" +
+                                     "&emsp;❏ CREATED_AT: " + data.device_info.created_at + "<br>" +
+                                     "&emsp;❏ UPDATED_AT: " + data.device_info.updated_at + "<br>" +
+                                     "&emsp;❏ LAST_LOGIN_AT: " + data.device_info.last_login_at + "<br>" +
+                                     "&emsp;❏ DEVICE_INFO: " + data.device_info.device_info + "<br>" +
+                                     "&emsp;❏ OS_INFO: " + data.device_info.os_info;
+                    responseDiv.innerHTML = "<p class='info'>" + infoString + "</p>";
+                }
+            })
+            .catch(error => {
+                var responseDiv = document.getElementById("response");
+                responseDiv.innerHTML = "<p class='error'>Error fetching device info. Please try again later.</p>";
+            });
+        }
+    </script>
+</body>
+</html>
